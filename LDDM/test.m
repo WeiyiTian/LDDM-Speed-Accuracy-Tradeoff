@@ -30,15 +30,10 @@ noiseD2 = 0;
 
 choice_time = 0;
 choice = 0;
-R1_ave = 0;
-R2_ave = 0;
 
 % simulation
 for ri = 2:(1/dt)
     r = ri/1000;
-    V1 = 2 * S * r;
-    V2 = 2 * S - V1;
-
     [choice(ri), choice_time(ri)] = ave_choice(r);
 
 end
@@ -90,10 +85,11 @@ function [choice, choice_time] = ave_choice(r)
     
     choice_time = 0;
     choice = 0;
+
     V1 = 2 * S * r;
     V2 = 2 * S - V1;
     
-    for ri = 2:10240
+    for ri = 2:1024
         for ti = 2:dur/dt
             dnoiseR1 = (-noiseR1(ti-1) + randn.*sqrt(dt).*sgm)/noise_tau*dt;
             dnoiseR2 = (-noiseR2(ti-1) + randn.*sqrt(dt).*sgm)/noise_tau*dt;
@@ -135,7 +131,7 @@ function [choice, choice_time] = ave_choice(r)
 
     end
 
-    choice_time = choice_time / 10240;
-    choice = choice /10240;
+    choice_time = choice_time / 1024;
+    choice = choice /1024;
 
 end    
