@@ -5,6 +5,7 @@
 LL = log(0);
 Chi2 = 0;
 h = figure;
+f = [];
 
 for vi = 1:6
   En(vi) = numel(rtmat(:,vi));

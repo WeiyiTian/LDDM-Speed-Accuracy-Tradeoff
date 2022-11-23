@@ -1,72 +1,91 @@
 %% for reaction time by histogram
 %function [speed_LL, accuracy_LL] = QMLE(data)
-function speed_LL = QMLE(data)
+function LL = QMLE(simulate_data, empirical_data)
 % QMLE, quantile maximum likelihood estimation
 % reference: Heathcote & Australia, and Mewhort, 2002.
 
 % speed
 speed_h = figure;
-speed = data.speed;
-speed_coh = data.speed_coh;
-speed_qmat = data.speed_qmat;
+%simulate_speed_rt = simulate_data.speed_rtmat;
+simulate_speed_rt = simulate_data.rtmat;
+%simulate_speed_choice = simulate_data.speed_choice;
+simulate_speed_choice = simulate_data.choicemat;
+
+speed_coh = empirical_data.speed_coh;
+empirical_speed_qmat = empirical_data.speed_qmat;
+speed_empirical_num = empirical_data.speed_observe_num;
+
+speed_simulate_total = [];
+speed_estimate_qnum = [];
+speed_f = [];
 
 for vi = 1: length(speed_coh)
-    correct_RT = speed.rt(speed.coh == speed_coh(vi) & speed.cor == 1) / 1000;
-    wrong_RT = speed.rt(speed.coh == speed_coh(vi) & speed.cor == 0) / 1000;
-    speed_observation_num(vi) = length(speed.rt(speed.coh == speed_coh(vi)));
+    correct_RT = simulate_speed_rt(simulate_speed_choice(:, vi)==1, vi);
+    %wrong_RT = simulate_speed_rt(simulate_speed_choice(:, vi)==0, vi);
+    wrong_RT = simulate_speed_rt(simulate_speed_choice(:, vi)==2, vi);
+    speed_simulate_total(vi) = length(simulate_speed_rt(:, vi));
 
-    if ~any(isnan(speed_qmat(:, 1, vi)))
-        temp = histogram(correct_RT, [0; speed_qmat(:, 1, vi); Inf]);
+    if ~any(isnan(empirical_speed_qmat(:, 1, vi)))
+        temp = histogram(correct_RT, [0; empirical_speed_qmat(:, 1, vi); Inf]);
         speed_estimate_qnum(:, 1, vi) = temp.Values;
     else
-        speed_estimate_qnum(:, 1, vi) = NaN(length(speed_qmat(:, 1, vi))+1, 1);
+        speed_estimate_qnum(:, 1, vi) = NaN(length(empirical_speed_qmat(:, 1, vi))+1, 1);
     end
 
-    if ~any(isnan(speed_qmat(:, 2, vi)))
-        temp = histogram(wrong_RT, [0; speed_qmat(:, 2, vi); Inf]);
+    if ~any(isnan(empirical_speed_qmat(:, 2, vi)))
+        temp = histogram(wrong_RT, [0; empirical_speed_qmat(:, 2, vi); Inf]);
         speed_estimate_qnum(:, 2, vi) = temp.Values;
     else
-        speed_estimate_qnum(:, 2, vi) = NaN(length(speed_qmat(:, 2, vi))+1, 1);
+        speed_estimate_qnum(:, 2, vi) = NaN(length(empirical_speed_qmat(:, 2, vi))+1, 1);
     end
 
-    f(:, :, vi) = log(speed_estimate_qnum(:, :, vi) / speed_observation_num(vi));
-    f(f(:, 1, vi)==-Inf, 1, vi) = log(.1/speed_observation_num(vi));
-    f(f(:, 2, vi)==-Inf, 2, vi) = log(.1/speed_observation_num(vi));
+    speed_f(:, :, vi) = log(speed_estimate_qnum(:, :, vi) / speed_simulate_total(vi));
+    speed_f(speed_f(:, 1, vi)==-Inf, 1, vi) = log(.1/speed_simulate_total(vi));
+    speed_f(speed_f(:, 2, vi)==-Inf, 2, vi) = log(.1/speed_simulate_total(vi));
 end
 
-speed_LL = sum(speed_observation_num(:) .* f(:), 'omitnan');
+speed_LL = sum(speed_empirical_num(:) .* speed_f(:), 'omitnan');
+LL.speed_LL = speed_LL;
 close(speed_h);
 
 
 % accuracy
 accuracy_h = figure;
-accuracy = data.accuracy;
-accuracy_coh = data.accuracy_coh;
-accuracy_qmat = data.accuracy_qmat;
+simulate_accuracy_rt = simulate_data.accuracy_rtmat;
+simulate_accuracy_choice = simulate_data.accuracy_choice;
+
+empirical_accuracy_qmat = empirical_data.accuracy_qmat;
+accuracy_coh = empirical_data.accuracy_coh;
+accuracy_empirical = empirical_data.accuracy_observe_num;
+
+accuracy_total = [];
+accuracy_estimate_qnum = [];
+accuracy_f = [];
 
 for vi = 1: length(accuracy_coh)
-    correct_RT = accuracy.rt(accuracy.coh == accuracy_coh(vi) & accuracy.cor == 1) / 1000;
-    wrong_RT = accuracy.rt(accuracy.coh == accuracy_coh(vi) & accuracy.cor == 0) / 1000;
-    accuracy_observation_num(vi) = length(accuracy.rt(accuracy.coh == accuracy_coh(vi)));
+    correct_RT = simulate_speed_rt(simulate_accuracy_choice(:, vi)==1, vi);
+    wrong_RT = simulate_speed_rt(simulate_accuracy_choice(:, vi)==0, vi);
+    accuracy_total(vi) = length(simulate_accuracy_rt(:, vi));
 
-    if ~any(isnan(accuracy_qmat(:, 1, vi)))
-        temp = histogram(correct_RT, [0; accuracy_qmat(:, 1, vi); Inf]);
+    if ~any(isnan(empirical_accuracy_qmat(:, 1, vi)))
+        temp = histogram(correct_RT, [0; empirical_accuracy_qmat(:, 1, vi); Inf]);
         accuracy_estimate_qnum(:, 1, vi) = temp.Values;
     else
-        accuracy_estimate_qnum(:, 1, vi) = NaN(length(accuracy_qmat(:, 1, vi))+1, 1);
+        accuracy_estimate_qnum(:, 1, vi) = NaN(length(empirical_accuracy_qmat(:, 1, vi))+1, 1);
     end
 
-    if ~any(isnan(accuracy_qmat(:, 2, vi)))
-        temp = histogram(wrong_RT, [0; accuracy_qmat(:, 2, vi); Inf]);
+    if ~any(isnan(empirical_accuracy_qmat(:, 2, vi)))
+        temp = histogram(wrong_RT, [0; empirical_accuracy_qmat(:, 2, vi); Inf]);
         accuracy_estimate_qnum(:, 2, vi) = temp.Values;
     else
-        accuracy_estimate_qnum(:, 2, vi) = NaN(length(accuracy_qmat(:, 2, vi))+1, 1);
+        accuracy_estimate_qnum(:, 2, vi) = NaN(length(empirical_accuracy_qmat(:, 2, vi))+1, 1);
     end
 
-    f(:, :, vi) = log(accuracy_estimate_qnum(:, :, vi) / accuracy_observation_num(vi));
-    f(f(:, 1, vi)==-Inf, 1, vi) = log(.1/accuracy_observation_num(vi));
-    f(f(:, 2, vi)==-Inf, 2, vi) = log(.1/accuracy_observation_num(vi));
+    accuracy_f(:, :, vi) = log(accuracy_estimate_qnum(:, :, vi) / accuracy_total(vi));
+    accuracy_f(accuracy_f(:, 1, vi)==-Inf, 1, vi) = log(.1/accuracy_total(vi));
+    accuracy_f(accuracy_f(:, 2, vi)==-Inf, 2, vi) = log(.1/accuracy_total(vi));
 end
 
-accuracy_LL = sum(accuracy_observation_num .* f, 'omitnan');
-close(accuracy_h)
+accuracy_LL = sum(accuracy_empirical(:) .* accuracy_f(:), 'omitnan');
+LL.accuracy_LL = accuracy_LL;
+close(accuracy_h);
