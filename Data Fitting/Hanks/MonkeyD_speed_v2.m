@@ -2,7 +2,7 @@
 % write your own help language here
 %% set path
 addpath(genpath('./bads-master'));
-out_dir = './Rstlt/v1';
+out_dir = './Rstlt/monkeyD_speed_v2';
 if ~exist(out_dir,'dir')
     mkdir(out_dir);
 end
@@ -37,7 +37,7 @@ nLLfun = @(params) LDDM_fit_speed(params, dataBhvr);
 fprintf('test succeeded\n');
 
 %% start to fit
-myCluster.NumWorkers = 8;
+myCluster.NumWorkers = 6; %8
 mypool = parpool(myCluster.NumWorkers); % open parallel pool 
 
 Collect = [];
