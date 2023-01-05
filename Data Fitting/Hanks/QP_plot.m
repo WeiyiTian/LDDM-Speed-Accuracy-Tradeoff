@@ -1,6 +1,7 @@
-function QP_plot(params, dataBhvr, condition, version)
+function QP_plot(params, dataBhvr, monkey, condition, version, filename)
 
-out_dir = "./Rstlt/" + version;
+out_dir = monkey + "/" + version + "/result/" + condition;
+new_title = monkey + " " + condition + " " + version;
 
 % reload Hanks data, processed
 if condition == "accuracy"
@@ -53,7 +54,7 @@ Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a(1)).*eqlb);
     sgm, Tau, predur, dur, dt, presentt, triggert, thresh, initialvals, stimdur, stoprule, sims);
 simulate_rt = squeeze(simulate_rt)'+ndt;
 simulate_choice = squeeze(simulate_choice)';
-save(fullfile(out_dir, sprintf('simulate_%s.mat', version)), 'simulate_rt', 'simulate_choice');
+save(fullfile(out_dir, sprintf('simulate_%s.mat', filename)), 'simulate_rt', 'simulate_choice');
 % toc;
 
 
@@ -104,7 +105,7 @@ end
 xlim([-.05 1.05]);
 % ylim([0.2, 1.4]);
 % yticks([.2:.4:1.4]);
-title('Quantile Proportion')
+title(new_title)
 xlabel('Proportion');
 ylabel('RT (s)');
-savefigs(h, version+".eps", out_dir, fontsize, [2.5 2.5]);
+savefigs(h, filename+"_QP", out_dir, fontsize, [2.5 2.5]);
