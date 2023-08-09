@@ -1,9 +1,12 @@
 %% Main file to fit Hanks data
 % write your own help language here
 
-%% setup directory
+%% set up directory
+addpath('../utils');
 numNode = 1;
-[sortNum, myCluster] = RndCtrl(numNode);
+myCluster  = parcluster();
+sortNum = 1;
+%[sortNum, myCluster] = RndCtrl(numNode);
 mypool = parpool(myCluster, myCluster.NumWorkers);
 
 %% set path
