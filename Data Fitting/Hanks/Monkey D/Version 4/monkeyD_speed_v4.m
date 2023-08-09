@@ -9,7 +9,7 @@ mypool = parpool(myCluster, myCluster.NumWorkers);
 %% set path
 addpath(genpath('../'))
 addpath(genpath('./bads-master'));
-out_dir = './result/monkeyD_speed_v4';
+out_dir = './result/speed';
 if ~exist(out_dir,'dir')
     mkdir(out_dir);
 end

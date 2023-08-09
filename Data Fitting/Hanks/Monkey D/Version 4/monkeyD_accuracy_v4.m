@@ -2,7 +2,6 @@
 % write your own help language here
 
 %% set up directory
-addpath('../utils');
 numNode = 1;
 myCluster  = parcluster();
 sortNum = 1;
@@ -10,16 +9,17 @@ sortNum = 1;
 mypool = parpool(myCluster, myCluster.NumWorkers);
 
 %% set path
+addpath(genpath('../../'))
 addpath(genpath('../'))
 addpath(genpath('./bads-master'));
-out_dir = './result/monkeyD_accuracy_v4';
+out_dir = './result/accuracy';
 if ~exist(out_dir,'dir')
     mkdir(out_dir);
 end
 
 %% Take data from Hanks, et al., 2014
 % monkey D
-dataBhvr = load_data("behavData_dam.mat");
+dataBhvr = load_data("../../Empirical Data/behavData_dam.mat");
 
 %% define the range of the parameters
 % Define optimization starting point and bounds
