@@ -1,7 +1,7 @@
 addpath('../../RecurrentModel');
 numNode = 1;
 [sortNum, myCluster] = RndCtrl(numNode);
-mypool = parpool(myCluster, myCluster.NumWorkers);
+mypool = parpool(myCluster, myCluster.NumWorkers)
 ​
 %% Model fitting with Bayesian Adaptive Direct Search (BADS) optimization algorithm
 addpath(genpath('../../RecurrentModel/bads/bads-master'));

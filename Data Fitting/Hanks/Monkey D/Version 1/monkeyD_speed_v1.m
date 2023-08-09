@@ -8,7 +8,6 @@ if ~exist(out_dir,'dir')
     mkdir(out_dir);
 end
 
-
 %% set up random generator
 sortNum = 1;
 t = datenum(clock)*10^10 - floor(datenum(clock)*100)*10^8 + sortNum*10^7;
