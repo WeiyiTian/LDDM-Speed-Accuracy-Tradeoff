@@ -4,6 +4,8 @@ function LL = QMLE(simulate_data, empirical_data)
 % QMLE, quantile maximum likelihood estimation
 % reference: Heathcote & Australia, and Mewhort, 2002.
 
+% maximizing QMLE => maximizing the match of data patterns
+
 % speed
 speed_h = figure;
 %simulate_speed_rt = simulate_data.speed_rtmat;
@@ -89,3 +91,6 @@ end
 accuracy_LL = sum(accuracy_empirical(:) .* accuracy_f(:), 'omitnan');
 LL.accuracy_LL = accuracy_LL;
 close(accuracy_h);
+
+% in combination
+LL = speed_LL + accuracy_LL;
