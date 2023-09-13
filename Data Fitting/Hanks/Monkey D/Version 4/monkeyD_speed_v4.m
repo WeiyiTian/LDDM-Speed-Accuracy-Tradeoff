@@ -7,6 +7,7 @@ numNode = 1;
 mypool = parpool(myCluster, myCluster.NumWorkers);
 
 %% set path
+addpath(genpath('../../'))
 addpath(genpath('../'))
 addpath(genpath('./bads-master'));
 out_dir = './result/speed';
@@ -16,7 +17,7 @@ end
 
 %% Take data from Hanks, et al., 2014
 % monkey D
-dataBhvr = load_data("behavData_dam.mat");
+dataBhvr = load_data("../../Empirical Data/behavData_dam.mat");
 
 %% define the range of the parameters
 % Define optimization starting point and bounds
