@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=gpu4_medium
-#SBATCH --job-name=Ev2
+#SBATCH --job-name=Ev3
 #SBATCH --mem-per-cpu=4G
 #SBATCH --time=3-00:00:00
 #SBATCH --tasks=1
@@ -10,4 +10,4 @@
 #SBATCH --gres=gpu:4
 #SBATCH --mail-type=END
 #SBARCH --mail-user=wt746@nyu.edu
-srun /gpfs/home/wt746/LDDM-Speed-Accuracy-Tradeoff/batchLDDM
+srun /gpfs//home/wt746/LDDM-Speed-Accuracy-Tradeoff/batchLDDM
