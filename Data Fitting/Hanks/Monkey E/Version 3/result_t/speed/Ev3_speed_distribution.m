@@ -1,6 +1,7 @@
-addpath(genpath('../../'))
+addpath('../../../../utils')
+addpath('../../../../Empirical Data')
 
-dataBhvr = load_data("Empirical Data/behavData_eli.mat");
+dataBhvr = load_data("behavData_eli.mat");
 simulate_data = load("simulate_MonkeyE_speed_v3");
 
 monkey = 'Monkey E';

@@ -1,4 +1,4 @@
-addpath(genpath('../../'))
+addpath('../../utility')
 
 dataBhvr = load_data("Empirical Data/behavData_eli.mat");
 monkey = 'Monkey E';

@@ -1,7 +1,11 @@
-function QP_plot(params, dataBhvr, monkey, condition, version, filename)
+function QP_plot_Rndinput(params, dataBhvr, monkey, condition, version, filename)
 
-out_dir = monkey + "/" + version + "/result/" + condition;
+out_dir = ".\" + condition;
 new_title = monkey + " " + condition + " " + version;
+
+if ~exist(out_dir, 'dir')
+    mkdir(out_dir);
+end
 
 % reload Hanks data, processed
 if condition == "accuracy"
@@ -62,20 +66,19 @@ save(fullfile(out_dir, sprintf('simulate_%s.mat', filename)), 'simulate_rt', 'si
 % visualization
 lwd = 1.0;
 mksz = 3;
-fontsize = 11;
+fontsize = 14;
 
 empirical_y = empirical_qmat;
 h = figure; hold on;
 x_coords = [];
 simulate_qmat = [];
 
-% filename = sprintf('Q-QPlot_%s',name);
 for vi = 1:length(empirical_proportion_mat)
     % empirical data
     x_correct_coords = empirical_proportion_mat(vi) * ones(size(empirical_y(:, 1, vi)));
     x_wrong_coords = (1-empirical_proportion_mat(vi)) * ones(size(empirical_y(:, 2, vi)));
-    plot(x_correct_coords, empirical_y(:, 1, vi), 'gx', 'MarkerSize', mksz+1, 'LineWidth', lwd);
-    plot(x_wrong_coords, empirical_y(:, 2, vi), 'rx', 'MarkerSize', mksz+1, 'LineWidth', lwd);
+    lg1 = plot(x_correct_coords, empirical_y(:, 1, vi), 'x', 'Color', '#5D9C59', 'MarkerSize', mksz+1, 'LineWidth', lwd);
+    lg2 = plot(x_wrong_coords, empirical_y(:, 2, vi), 'x', 'Color', '#FF8787', 'MarkerSize', mksz+1, 'LineWidth', lwd);
 
     % fitted value
     simulate_RT_corr = simulate_rt(simulate_choice(:, vi) == 1, vi);
@@ -83,29 +86,16 @@ for vi = 1:length(empirical_proportion_mat)
     simulate_qmat(:, 1, vi) = quantile(simulate_RT_corr, .1:.1:.9);
     simulate_qmat(:, 2, vi) = quantile(simulate_RT_wro, .1:.1:.9);
     x_coords(vi) = numel(simulate_RT_corr) / (numel(simulate_RT_corr) + numel(simulate_RT_wro));
-
-%     En(vi) = numel(rtmat(:, vi));
-%     RT_corr = rtmat(choicemat(:, vi) == 1,vi);
-%     RT_wro = rtmat(choicemat(:, vi) == 2,vi);
-%    xr = numel(RT_corr) / (numel(RT_corr) + numel(RT_wro));
-%     q(:, 1, vi) = quantile(RT_corr, qntls); % RT value on quantiles, correct trial
-%     q(:, 2, vi) = quantile(RT_wro, qntls); % RT value on quantiles, error trial
 end
-
-% for qi = 1:size(q,1)
-%   xq = [flip(1-x), x]';
-%   plot(xq,[squeeze(flip(q(qi,2,:)));squeeze(q(qi,1,:))],'k-o','MarkerSize',mksz,'LineWidth',lwd/2);
-% end
 
 x_coords = [flip(1-x_coords), x_coords]';
 for qi = 1:size(simulate_qmat, 1)
-    plot(x_coords, [squeeze(flip(simulate_qmat(qi, 2, :))); squeeze(simulate_qmat(qi, 1, :))], 'k-o','MarkerSize', mksz, 'LineWidth', lwd/2)
+    plot(x_coords, [squeeze(flip(simulate_qmat(qi, 2, :))); squeeze(simulate_qmat(qi, 1, :))], ...
+        'k-o', 'MarkerSize', mksz, 'LineWidth', lwd/2, 'DisplayName', '')
 end
 
-
+legend([lg1, lg2], {'Correct', 'Error'}, 'Box', 'off');
 xlim([-.05 1.05]);
-% ylim([0.2, 1.4]);
-% yticks([.2:.4:1.4]);
 title(new_title)
 xlabel('Proportion');
 ylabel('RT (s)');

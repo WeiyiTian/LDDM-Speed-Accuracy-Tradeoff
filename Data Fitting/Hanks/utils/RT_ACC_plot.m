@@ -44,7 +44,7 @@ for ii = 1:6
 end
 
 %% visualization
-out_dir = monkey + "/" + version + "/result/" + condition;
+out_dir = '.\' + condition;
 new_title = monkey + " " + condition + " " + version;
 
 coh_percentage = coh_lst * 100;
@@ -52,26 +52,29 @@ coh_percentage(1) = 1;
 h = figure;
 
 subplot(2, 1, 1); hold on;
-plot(coh_percentage, fit_ACC*100, '-', 'Color', plot_color, 'LineWidth', 2, 'DisplayName', 'Model');
-plot(coh_percentage, emp_ACC*100, 'x', 'Color', plot_color, 'MarkerSize', 4, 'DisplayName', 'Data');
+plot(coh_percentage, fit_ACC*100, '-', 'Color', plot_color, 'DisplayName', 'Model');
+plot(coh_percentage, emp_ACC*100, 'x', 'Color', plot_color, 'DisplayName', 'Data');
 ylim([.5, 1] * 100);
 xlim([0, 100]);
 ylabel('Accuracy (%)');
-xlabel('Input Coherence (%)');
+xticklabels({})
 set(gca, 'XScale', 'log');
 legend('boxoff');
 title(new_title);
+set_fig(h, 15, [3 5]);
 
 subplot(2, 1, 2); hold on;
-plot(coh_percentage, emp_RT_correct, '.', 'Color', plot_color, 'MarkerSize', 8,'DisplayName', '');
-plot(coh_percentage, emp_RT_wrong, 'o', 'Color', plot_color, 'MarkerSize', 4, 'DisplayName', '');
-plot(coh_percentage, fit_RT_correct, 'Color', plot_color, 'LineWidth', 2, 'DisplayName', 'Correct');
-plot(coh_percentage, fit_RT_wrong, 'LineStyle', '--', 'Color', plot_color, 'LineWidth', 2, 'DisplayName', 'Error');
-ylim([0.35, 1]);
+plot(coh_percentage, emp_RT_correct, '.', 'Color', plot_color, 'DisplayName', '');
+plot(coh_percentage, emp_RT_wrong, 'o', 'Color', plot_color, 'DisplayName', '');
+plot(coh_percentage, fit_RT_correct, 'Color', plot_color, 'DisplayName', 'Correct');
+plot(coh_percentage, fit_RT_wrong, 'LineStyle', '--', 'Color', plot_color, 'DisplayName', 'Error');
+
+y_min = min([emp_RT_wrong emp_RT_correct fit_RT_wrong fit_RT_correct]) - .1;
+y_max = max([emp_RT_wrong emp_RT_correct fit_RT_wrong fit_RT_correct]) + .1;
+ylim([y_min, y_max]);
 xlim([0, 100]);
 ylabel('Reaction Time (s)');
 xlabel('Input Coherence (%)');
 set(gca, 'XScale', 'log');
 legend('NumColumns', 2, 'Box', 'off');
-
-savefigs(h, filename, out_dir, 10, [2.5 2.5]);
+savefigs(h, filename+"_RT_ACC", out_dir, 14, [3 5]);

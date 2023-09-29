@@ -1,5 +1,8 @@
-function distribution_plot(simulate_data, empirical_data, condition, filename)
+function distribution_plot(simulate_data, empirical_data, monkey, condition, version, filename)
 %% data loading
+out_dir = ".\" + condition;
+new_title = monkey + " " + condition + " " + version;
+
 simulate_rt = simulate_data.simulate_rt;
 simulate_choice = simulate_data.simulate_choice;
 
@@ -15,13 +18,21 @@ elseif condition == "speed"
     coh_lst = sort(empirical_data.speed_coh);
 end
 
-emp_max_rt = max(empirical_rt);
-emp_min_rt = min(empirical_rt);
-sim_max_rt = max(simulate_rt);
-sim_min_rt = min(simulate_rt);
+rate = [];
+emp_max_rt = [];
+emp_min_rt = [];
+sim_max_rt = [];
+sim_min_rt = [];
+for ii = 1:6
+    emp_max_rt(ii) = max(empirical_rt(empirical_coh == coh_lst(ii)));
+    emp_min_rt(ii) = min(empirical_rt(empirical_coh == coh_lst(ii)));
+    rate(ii) = length(simulate_rt(:, ii)) / length(empirical_rt(empirical_coh == coh_lst(ii)));
+    sim_max_rt(ii) = max(simulate_rt(:, ii));
+    sim_min_rt(ii) = min(simulate_rt(:, ii));
+end
+
 
 %% pre-calculation of simulated data
-rate = length(simulate_rt) / length(empirical_rt);
 num_bins = 30;
 
 sim_bank_correct = [];
@@ -30,13 +41,13 @@ sim_bin_center = [];
 
 for ii = 1:6
     % empirical data determines the gap size
-    gap = (emp_max_rt - emp_min_rt) / num_bins;
-    bin_edge = [sim_min_rt: gap: (sim_max_rt+gap)];
+    gap = (emp_max_rt(ii) - emp_min_rt(ii)) / num_bins;
+    bin_edge = [sim_min_rt(ii): gap: (sim_max_rt(ii)+gap)];
     correct_hg = histogram(simulate_rt(simulate_choice(:, ii)==1, ii), 'BinEdges', bin_edge, 'Visible', 0);
-    sim_bank_correct{ii} = correct_hg.Values / rate;
+    sim_bank_correct{ii} = correct_hg.Values / rate(ii);
     close;
     wrong_hg =  histogram(simulate_rt(simulate_choice(:, ii)==2, ii), 'BinEdges', bin_edge, 'Visible', 0);
-    sim_bank_wrong{ii} = wrong_hg.Values / rate;
+    sim_bank_wrong{ii} = wrong_hg.Values / rate(ii);
     close;
     sim_bin_center{ii} = bin_edge(1: end-1) + gap/2;
 end
@@ -72,40 +83,37 @@ end
 
 %% RT distribution and fitted line visualization
 h = figure;
+lwd = 1;
+font_size = 8;
+
 for ii = 1:6
     subplot(6, 1, ii); hold on;
-    plot(sim_bin_center{ii}, sim_bank_correct{ii}, 'Color', "#0072BD", 'LineWidth', 2);
-    plot(sim_bin_center{ii}, -sim_bank_wrong{ii}, 'Color', "#A2142F", 'LineWidth', 2);
-    bar(emp_bin_center(ii, :), emp_bank_correct(ii, :));
-    bar(emp_bin_center(ii, :), -emp_bank_wrong(ii, :));
+    plot(sim_bin_center{ii}, sim_bank_correct{ii}, 'LineWidth', lwd, 'Color', '#655DBB', 'DisplayName', '');
+    plot(sim_bin_center{ii}, -sim_bank_wrong{ii}, 'LineWidth', lwd, 'Color', '#E96479', 'DisplayName', '');
+    bar(emp_bin_center(ii, :), emp_bank_correct(ii, :), 'FaceColor', '#BFACE2', ...
+        'BarWidth', 1, 'FaceAlpha', .7, 'EdgeAlpha', 0, 'DisplayName', 'Correct');
+    bar(emp_bin_center(ii, :), -emp_bank_wrong(ii, :), 'FaceColor', '#FFACAC', ...
+        'BarWidth', 1, 'FaceAlpha', .7, 'EdgeAlpha', 0, 'DisplayName', 'Error');
+
+    x_max = prctile(empirical_rt, 99);
+    xlim([.1 x_max]);
+
+    ylim([-60, 100]);
+    yticks([-50: 50: 100]);
+
+    if ii == 6
+        xlabel('Reaction time (s)');
+    else
+        xticklabels({});
+    end
+
+    if ii == 1
+        legend('NumColumns', 2, 'Location', 'North');
+        legend('boxoff');
+        title(new_title);
+    end
+
+    set_fig(h, font_size, [2 10]);
 end
 
-%% ditribution of RT and fitted line
-% h = figure;
-% for ii = 1:6
-%     subplot(6,1,ii); hold on;
-%     bar(dataBhvr.bincenter(ii,1:30),dataBhvr.histmat(ii,1:30)*1024,'FaceColor',colorpalette{3},'EdgeAlpha',0);
-%     bar(dataBhvr.bincenter(ii,1:30),-dataBhvr.histmat(ii,31:60)*1024,'FaceColor',colorpalette{2},'EdgeAlpha',0,'EdgeColor','none');
-%     plot(BinMiddle{ii},bank1{ii},'Color',colorpalette{4},'LineWidth',lwd);
-%     plot(BinMiddle{ii},-bank2{ii},'Color',colorpalette{1},'LineWidth',lwd);
-%     if ii == 7
-%         legend({'','','Correct','Error'},'NumColumns',2,'Location','North');
-%         legend('boxoff');
-%     end
-%     ylim([-60,100]);
-%     yticks([-50:50:100]);
-%     yticklabels({'50','0','50','100'});
-%     xlim([100 1762]/1000);
-%     xticks([.5,1.0,1.5]);
-%     if ii == 6
-%         xticklabels({'.5','1.0','1.5'});
-%         xlabel('Reaction time (s)');
-%     else
-%         xticklabels({});
-%     end
-%     if ii == 1
-%         ylabel(' ');
-%     end
-%     set(gca, 'box','off');
-%     savefig(h, filename, outdir, fontsize, aspect8);
-% end
+savefigs(h, filename+"_dist", out_dir, font_size, [2 10]);

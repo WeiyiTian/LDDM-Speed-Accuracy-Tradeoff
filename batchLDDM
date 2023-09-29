@@ -1,5 +1,0 @@
-#!/bin/bash
-cd '/gpfs/home/wt746/LDDM-Speed-Accuracy-Tradeoff/Data Fitting/Hanks/Monkey E/Version 4'
-module load cuda/11.8
-module load matlab/R2021b
-matlab -nodisplay -r monkeyE_v4
