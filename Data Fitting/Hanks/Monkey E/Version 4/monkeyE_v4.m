@@ -49,7 +49,7 @@ parfor i = 1:myCluster.NumWorkers*4
     
     % Randomize initial starting point inside plausible box
     x0 = rand(1,numel(LB)) .* (PUB - PLB) + PLB;
-    dlmwrite(fullfile(out_dir,'x0List.txt'),[sortNum, i, t, x0],'delimiter','\t','precision','%.6f','-append');
+    dlmwrite(fullfile(out_dir,'Ev4_x0List.txt'),[sortNum, i, t, x0],'delimiter','\t','precision','%.6f','-append');
     % fit
     options = bads('defaults');     % Default options
     options.Display = 'iter';
@@ -68,7 +68,7 @@ parfor i = 1:myCluster.NumWorkers*4
     % of function evaluations.
     options.NoiseFinalSamples = 20;
     [xest,fval,~,output] = bads(nLLfun,x0,LB,UB,PLB,PUB,[],options);
-    dlmwrite(fullfile(out_dir,'RsltList.txt'),[sortNum, i, t, xest fval],'delimiter','\t','precision','%.6f','-append');
+    dlmwrite(fullfile(out_dir,'Ev4_RsltList.txt'),[sortNum, i, t, xest fval],'delimiter','\t','precision','%.6f','-append');
 
     Collect(i).rndseed = t;
     Collect(i).x0 = x0;
@@ -77,4 +77,4 @@ parfor i = 1:myCluster.NumWorkers*4
     Collect(i).output = output;
 end
 t = datenum(clock)*10^10 - floor(datenum(clock)*100)*10^8 + sortNum*10^7 + i*10^5;
-save(fullfile(out_dir,sprintf('CollectRslts%i.mat',t)),'Collect');
+save(fullfile(out_dir,sprintf('Ev4_CollectRslts%i.mat',t)),'Collect');
