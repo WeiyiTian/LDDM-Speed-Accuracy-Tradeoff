@@ -1,5 +1,5 @@
 #!/bin/bash
-cd '/gpfs/home/wt746/LDDM-Speed-Accuracy-Tradeoff/Data Fitting/Hanks/Monkey D/Version 7'
+cd '/gpfs/home/wt746/LDDM-Speed-Accuracy-Tradeoff/Data Fitting/Hanks/Monkey D/Version 8'
 module load cuda/11.8
 module load matlab/R2021b
-matlab -nodisplay -r monkeyD_v7
+matlab -nodisplay -r monkeyD_v8
