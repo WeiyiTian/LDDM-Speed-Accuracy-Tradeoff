@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATH --partition=a100_long
+#SBATCH --job-name=Ev7
+#SBATCH --mem=120G
+#SBATCH --time=7-00:00:00
+#SBATCH --tasks=1
+#SBATCH --cpus-per-task=40
+#SBATCH --nodes=1
+#SBATCH --tasks-per-node=1
+#SBATCH --gres=gpu:a100:4
+#SBATCH --mail-type=END
+#SBARCH --mail-user=wt746@nyu.edu
+srun /gpfs//home/wt746/LDDM-Speed-Accuracy-Tradeoff/E_batchLDDM

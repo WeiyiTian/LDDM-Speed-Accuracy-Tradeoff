@@ -31,7 +31,6 @@ for ii = 1:6
     sim_min_rt(ii) = min(simulate_rt(:, ii));
 end
 
-
 %% pre-calculation of simulated data
 num_bins = 30;
 
@@ -86,6 +85,9 @@ h = figure;
 lwd = 1;
 font_size = 8;
 
+y_min = floor(min([-max(emp_bank_wrong(:)), -max(cell2mat(sim_bank_wrong))]) / 50) * 50;
+y_max = ceil(max([max(emp_bank_correct(:)), max(cell2mat(sim_bank_correct))]) / 50) * 50;
+
 for ii = 1:6
     subplot(6, 1, ii); hold on;
     plot(sim_bin_center{ii}, sim_bank_correct{ii}, 'LineWidth', lwd, 'Color', '#655DBB', 'DisplayName', '');
@@ -98,8 +100,8 @@ for ii = 1:6
     x_max = prctile(empirical_rt, 99);
     xlim([.1 x_max]);
 
-    ylim([-60, 100]);
-    yticks([-50: 50: 100]);
+    ylim([y_min, y_max]);
+    yticks([y_min: 50: y_max]);
 
     if ii == 6
         xlabel('Reaction time (s)');
