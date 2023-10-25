@@ -56,18 +56,24 @@ speed_sim_bin_center = [];
 
 for ii = 1:6
     % empirical data determines the gap size
-    acc_gap = (acc_emp_max_rt(ii) - acc_emp_min_rt(ii)) / num_bins;
-    acc_bin_edge = [acc_sim_min_rt(ii): acc_gap: (acc_sim_max_rt(ii)+acc_gap)];
+%     acc_tmp_rt = acc_empirical_rt(acc_empirical_coh == coh_lst(ii));
+%     speed_tmp_rt = speed_empirical_rt(speed_empirical_coh == coh_lst(ii));
+%     gap = (prctile([speed_tmp_rt; acc_tmp_rt], 95) - min([acc_emp_min_rt(ii) speed_emp_min_rt(ii)])) / num_bins;
+    
+    acc_tmp_rt = acc_simulate_rt(:, ii);
+    speed_tmp_rt = speed_simulate_rt(:, ii);
+    gap = (prctile([speed_tmp_rt; acc_tmp_rt], 99) - min([acc_sim_min_rt(ii) speed_sim_min_rt(ii)])) / num_bins;
+
+    acc_bin_edge = [acc_sim_min_rt(ii): gap: (acc_sim_max_rt(ii)+gap)];
     acc_hg = histogram(acc_simulate_rt(:, ii), 'BinEdges', acc_bin_edge, 'Visible', 0);
     acc_sim_bank{ii} = acc_hg.Values / acc_rate(ii);
-    acc_sim_bin_center{ii} = acc_bin_edge(1: end-1) + acc_gap/2;
+    acc_sim_bin_center{ii} = acc_bin_edge(1: end-1) + gap/2;
     close;
 
-    speed_gap = (speed_emp_max_rt(ii) - speed_emp_min_rt(ii)) / num_bins;
-    speed_bin_edge = [speed_sim_min_rt(ii): speed_gap: (speed_sim_max_rt(ii)+speed_gap)];
+    speed_bin_edge = [speed_sim_min_rt(ii): gap: (speed_sim_max_rt(ii)+gap)];
     speed_hg = histogram(speed_simulate_rt(:, ii), 'BinEdges', speed_bin_edge, 'Visible', 0);
     speed_sim_bank{ii} = speed_hg.Values / speed_rate(ii);
-    speed_sim_bin_center{ii} = speed_bin_edge(1: end-1) + speed_gap/2;
+    speed_sim_bin_center{ii} = speed_bin_edge(1: end-1) + gap/2;
     close;
 end
 
@@ -79,22 +85,18 @@ speed_emp_bank = [];
 
 for ii = 1:6
     acc_tmp_rt = acc_empirical_rt(acc_empirical_coh == coh_lst(ii));
-    acc_tmp_min_rt = min(acc_tmp_rt);
-    acc_tmp_max_rt = max(acc_tmp_rt);
-    acc_tmp_bins = linspace(acc_tmp_min_rt, acc_tmp_max_rt, num_bins+1);
+    speed_tmp_rt = speed_empirical_rt(speed_empirical_coh == coh_lst(ii));
 
-    acc_tmp_hg = histogram(acc_tmp_rt, 'BinEdges', acc_tmp_bins, 'Visible', 0);
+    tmp_bins = linspace(min([acc_emp_min_rt(ii) speed_emp_min_rt(ii)]), ...
+        prctile([speed_tmp_rt; acc_tmp_rt], 99), num_bins+1);
+
+    acc_tmp_hg = histogram(acc_tmp_rt, 'BinEdges', tmp_bins, 'Visible', 0);
     acc_tmp_bin_center = acc_tmp_hg.BinEdges(1: end-1) + acc_tmp_hg.BinWidth/2;
     acc_emp_bin_center = [acc_emp_bin_center; acc_tmp_bin_center];
     acc_emp_bank = [acc_emp_bank; acc_tmp_hg.Values];
     close;
 
-    speed_tmp_rt = speed_empirical_rt(speed_empirical_coh == coh_lst(ii));
-    speed_tmp_min_rt = min(speed_tmp_rt);
-    speed_tmp_max_rt = max(speed_tmp_rt);
-    speed_tmp_bins = linspace(speed_tmp_min_rt, speed_tmp_max_rt, num_bins+1);
-
-    speed_tmp_hg = histogram(speed_tmp_rt, 'BinEdges', speed_tmp_bins, 'Visible', 0);
+    speed_tmp_hg = histogram(speed_tmp_rt, 'BinEdges', tmp_bins, 'Visible', 0);
     speed_tmp_bin_center = speed_tmp_hg.BinEdges(1: end-1) + speed_tmp_hg.BinWidth/2;
     speed_emp_bin_center = [speed_emp_bin_center; speed_tmp_bin_center];
     speed_emp_bank = [speed_emp_bank; speed_tmp_hg.Values];
@@ -108,21 +110,20 @@ font_size = 8;
 
 y_max = ceil(max([max(acc_emp_bank(:)), max(speed_emp_bank(:)), ...
     max(cell2mat(acc_sim_bank)), max(cell2mat(speed_sim_bank))]) / 50) * 50;
+x_max = max([prctile([acc_empirical_rt; speed_empirical_rt], 99)]);
 
 for ii = 1:6
     subplot(6, 1, ii); hold on;
 
-    plot(acc_sim_bin_center{ii}, acc_sim_bank{ii}, 'LineWidth', lwd, 'Color', '#86A3B8', 'DisplayName', '');
-    bar(acc_emp_bin_center(ii, :), acc_emp_bank(ii, :), 'FaceColor', '#8D8DAA', ...
+    lg1 = plot(acc_sim_bin_center{ii}, acc_sim_bank{ii}, 'LineWidth', lwd, 'Color', '#86A3B8', 'DisplayName', '');
+    lg2 = bar(acc_emp_bin_center(ii, :), acc_emp_bank(ii, :), 'FaceColor', '#8D8DAA', ...
         'BarWidth', 1, 'FaceAlpha', .7, 'EdgeAlpha', 0, 'DisplayName', 'Accuracy');
 
-    plot(speed_sim_bin_center{ii}, speed_sim_bank{ii}, 'LineWidth', lwd, 'Color', '#BD574E', 'DisplayName', '');
-    bar(speed_emp_bin_center(ii, :), speed_emp_bank(ii, :), 'FaceColor', '#EA5455', ...
+    lg3 = plot(speed_sim_bin_center{ii}, speed_sim_bank{ii}, 'LineWidth', lwd, 'Color', '#BD574E', 'DisplayName', '');
+    lg4 = bar(speed_emp_bin_center(ii, :), speed_emp_bank(ii, :), 'FaceColor', '#EA5455', ...
         'BarWidth', 1, 'FaceAlpha', .7, 'EdgeAlpha', 0, 'DisplayName', 'Speed');
 
-    x_max = max([prctile(acc_empirical_rt, 95), prctile(speed_empirical_rt, 95)]);
-    xlim([.15 x_max]);
-
+    xlim([.15, x_max]);
     ylim([0, y_max]);
     yticks([0: 50: y_max]);
 
@@ -133,12 +134,13 @@ for ii = 1:6
     end
 
     if ii == 1
-        legend('NumColumns', 2, 'Location', 'North');
-        legend('boxoff');
+%         legend('NumColumns', 2, 'Location', 'northoutside');
+%         legend('boxoff');
         title(new_title);
     end
 
     set_fig(h, font_size, [2 10]);
 end
 
-savefigs(h, filename+"_comb_dist", out_dir, font_size, [2 10]);
+legend([lg1, lg3, lg2, lg4], {'', '', 'Accuracy', 'Speed'}, 'Box', 'Off', 'NumColumns', 2);
+savefigs(h, filename+"_comb_dist", out_dir, font_size, [3 8]);

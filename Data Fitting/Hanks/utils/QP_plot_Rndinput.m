@@ -50,8 +50,12 @@ sgm = .3;
 
 % simulation
 % fprintf('GPU Simulations %i chains ...\t', sims);
-V1 = [(1 + Cohr)'].^2;
-V2 = [(1 - Cohr)'].^2;
+
+V1 = [(1 + Cohr)'].^1.5;
+V2 = [(1 - Cohr)'].^1.5;
+% V1 = (1 + Cohr)';
+% V2 = (1 - Cohr)';
+
 Vinput = [V1, V2]*scale;
 Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a(1)).*eqlb);
 % tic

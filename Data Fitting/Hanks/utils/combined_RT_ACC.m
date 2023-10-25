@@ -86,4 +86,4 @@ ylabel('Reaction Time (s)');
 xlabel('Input Coherence (%)');
 
 legend('NumColumns', 2, 'Box', 'off');
-savefigs(h, filename+"comb_RT_ACC", out_dir, 14, [3 5]);
+savefigs(h, filename+"_comb_RT_ACC", out_dir, 14, [3 5]);

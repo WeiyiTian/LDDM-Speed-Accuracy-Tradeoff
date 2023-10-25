@@ -7,7 +7,7 @@ speed_simulate_data = load("speed/simulate_MonkeyD_speed_v8");
 
 monkey = 'Monkey D';
 version = "Version 8";
-filename = "Dv9";
+filename = "Dv8";
 
 combined_RT_ACC(acc_simulate_data, speed_simulate_data, ...
     dataBhvr, monkey, version, filename)

@@ -6,13 +6,24 @@ monkey = 'Monkey D';
 version = "Version 9";
 
 %% params
+% acc_alpha = 19.942144;
+% acc_beta = 1.147256;
+% speed_alpha = 0.000052;
+% speed_beta = 1.601794;
+% sigma = 5.621544;
+% S = 444.654483;
+% tauR = 0.040878;
+% tauG = 0.01;
+% tauD = 0.153047;
+
+%test
 acc_alpha = 19.942144;
 acc_beta = 1.147256;
 speed_alpha = 0.000052;
-speed_beta = 1.601794;
+speed_beta = 2.401794;
 sigma = 5.621544;
 S = 444.654483;
-tauR = 0.040878;
+tauR = 0.160878;
 tauG = 0.01;
 tauD = 0.153047;
 

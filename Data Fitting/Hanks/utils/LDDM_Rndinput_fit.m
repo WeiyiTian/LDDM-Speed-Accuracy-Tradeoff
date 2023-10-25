@@ -38,8 +38,8 @@ sgm = .3;
 Tau = [tauR tauG tauI];
 % simulation
 % fprintf('GPU Simulations %i chains ...\t', sims);
-V1 = [(1 + Cohr)'].^2;
-V2 = [(1 - Cohr)'].^2;
+V1 = [(1 + Cohr)'].^1.5;
+V2 = [(1 - Cohr)'].^1.5;
 Vinput = [V1, V2]*scale;
 Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a_accuracy(1)).*eqlb);
 % tic

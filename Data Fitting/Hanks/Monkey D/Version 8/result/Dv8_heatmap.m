@@ -11,7 +11,7 @@ tauG = 0.009316;
 tauD = 0.135328;
 params = [sigma, S, tauR, tauG, tauD];
 
-RT_heatmap(params, monkey, version, filename)
+%RT_heatmap(params, monkey, version, filename)
 
 %% ness
 scale = params(2);
@@ -45,10 +45,9 @@ Nbs = 20;
 Bsec = ceil(Bdim/Nbs);
 cp = .128;
 sgm = .3;
-a_accuracy = params(1)*eye(2);
-b_accuracy = params(2)*eye(2);
+
 Tau = [tauR tauG tauI];
-Cohr = [0, .032, .064, .128, .256, .0512];
+Cohr = [0, .032, .064, .128, .256, .512];
 
 bi=3;
 startp = ((bi-1)*Bsec + 1);
