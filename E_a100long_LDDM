@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATH --partition=a100_long
-#SBATCH --job-name=Ev9
+#SBATCH --job-name=Ev10
 #SBATCH --mem=120G
 #SBATCH --time=7-00:00:00
 #SBATCH --tasks=1

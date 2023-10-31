@@ -1,21 +1,19 @@
 function [nLL, Chi2, BIC, AIC, simulate_accuracy_rt, simulate_accuracy_choice] = LDDM_Rndinput_fit(params, dataBhvr)
-%% reload Hanks data, processed -accuracy
-accuracy_coh = dataBhvr.accuracy_coh;
-empirical_accuracy_qmat = dataBhvr.accuracy_qmat;
-accuracy_empirical_num = dataBhvr.accuracy_observe_num;
-accuracy_empirical_total = dataBhvr.accuracy_observe_total;
-
-% parameters to fit
+%% parameters loading
 a_accuracy = params(1)*eye(2);
 b_accuracy = params(2)*eye(2);
-tauR = params(7);
-tauG = params(8);
-tauI = params(9);
+a_speed = params(3)*eye(2);
+b_speed = params(4)*eye(2);
+sgm = params(5);
+tauR = params(8);
+tauG = params(9);
+tauI = params(10);
+scale = params(7);
+sgmInput = params(6)*scale;
+
 ndt = .09 + .03; % sec, 90ms after stimuli onset, resort to the saccade side,
 % the activities reaches peak 30ms before initiation of saccade, according to Roitman & Shadlen
 presentt = 0; % changed for this version to move the fitting begin after the time point of recovery
-scale = params(6);
-sgmInput = params(5)*scale;
 
 % other fixed parameters
 % sims = 1024;
@@ -33,15 +31,21 @@ w = [1 1; 1 1];
 Rstar = 32; % ~ 32 Hz at the bottom of initial fip, according to Roitman and Shadlen's data
 initialvals = [Rstar,Rstar; sum(w(1,:))*Rstar,sum(w(2,:))*Rstar; 0,0];
 eqlb = Rstar; % set equilibrium value before task as R^*
-sgm = .3;
 
 Tau = [tauR tauG tauI];
 % simulation
 % fprintf('GPU Simulations %i chains ...\t', sims);
-V1 = [(1 + Cohr)'].^1.5;
-V2 = [(1 - Cohr)'].^1.5;
+V1 = [(1 + Cohr)'].^1;
+V2 = [(1 - Cohr)'].^1;
 Vinput = [V1, V2]*scale;
 Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a_accuracy(1)).*eqlb);
+
+%% reload Hanks data, processed -accuracy
+accuracy_coh = dataBhvr.accuracy_coh;
+empirical_accuracy_qmat = dataBhvr.accuracy_qmat;
+accuracy_empirical_num = dataBhvr.accuracy_observe_num;
+accuracy_empirical_total = dataBhvr.accuracy_observe_total;
+
 % tic
 [simulate_accuracy_rt, simulate_accuracy_choice, ~] = LDDM_Rndinput_GPU(Vprior, Vinput, w, a_accuracy, b_accuracy,...
     sgm, sgmInput, Tau, predur, dur, dt, presentt, triggert, thresh, initialvals, stimdur, stoprule, sims);
@@ -95,42 +99,6 @@ empirical_speed_qmat = dataBhvr.speed_qmat;
 speed_empirical_num = dataBhvr.speed_observe_num;
 speed_empirical_total = dataBhvr.speed_observe_total;
 
-% parameters to fit
-a_speed = params(3)*eye(2);
-b_speed = params(4)*eye(2);
-sgm = params(5);
-tauR = params(7);
-tauG = params(8);
-tauI = params(9);
-ndt = .09 + .03; % sec, 90ms after stimuli onset, resort to the saccade side,
-% the activities reaches peak 30ms before initiation of saccade, according to Roitman & Shadlen
-presentt = 0; % changed for this version to move the fitting begin after the time point of recovery
-scale = params(6);
-
-% other fixed parameters
-% sims = 1024;
-deduction = .1;
-sims = 1024/deduction;
-Cohr = [0 32 64 128 256 512]/1000; % percent of coherence
-predur = 0;
-triggert = 0;
-dur = 5;
-dt =.001;
-thresh = 70; %70.8399; % mean(max(m_mr1cD))+1; 
-stimdur = dur;
-stoprule = 1;
-w = [1 1; 1 1];
-Rstar = 32; % ~ 32 Hz at the bottom of initial fip, according to Roitman and Shadlen's data
-initialvals = [Rstar,Rstar; sum(w(1,:))*Rstar,sum(w(2,:))*Rstar; 0,0];
-eqlb = Rstar; % set equilibrium value before task as R^*
-
-Tau = [tauR tauG tauI];
-% simulation
-% fprintf('GPU Simulations %i chains ...\t', sims);
-V1 = (1 + Cohr)';
-V2 = (1 - Cohr)';
-Vinput = [V1, V2]*scale;
-Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a_speed(1)).*eqlb);
 % tic
 [simulate_speed_rt, simulate_speed_choice, ~] = LDDM_Rndinput_GPU(Vprior, Vinput, w, a_speed, b_speed,...
     sgm, sgmInput, Tau, predur, dur, dt, presentt, triggert, thresh, initialvals, stimdur, stoprule, sims);
