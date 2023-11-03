@@ -37,8 +37,8 @@ eqlb = Rstar; % set equilibrium value before task as R^*
 Tau = [tauR tauG tauI];
 % simulation
 % fprintf('GPU Simulations %i chains ...\t', sims);
-V1 = 1 + Cmax / (1 + exp(-gamma * Cohr));
-V2 = 1 - Cmax / (1 + exp(-gamma * Cohr));
+V1 = 1 + Cmax ./ (1 + exp(-gamma * Cohr));
+V2 = 1 - Cmax ./ (1 + exp(-gamma * Cohr));
 Vinput = [V1, V2]*scale;
 Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a_accuracy(1)).*eqlb);
 
