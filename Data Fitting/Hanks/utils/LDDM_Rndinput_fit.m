@@ -5,11 +5,12 @@ b_accuracy = params(2)*eye(2);
 a_speed = params(3)*eye(2);
 b_speed = params(4)*eye(2);
 sgm = params(5);
-tauR = params(8);
-tauG = params(9);
-tauI = params(10);
+tauR = params(9);
+tauG = params(10);
+tauI = params(11);
 scale = params(7);
 sgmInput = params(6)*scale;
+gamma = params(8);
 
 ndt = .09 + .03; % sec, 90ms after stimuli onset, resort to the saccade side,
 % the activities reaches peak 30ms before initiation of saccade, according to Roitman & Shadlen
@@ -35,8 +36,8 @@ eqlb = Rstar; % set equilibrium value before task as R^*
 Tau = [tauR tauG tauI];
 % simulation
 % fprintf('GPU Simulations %i chains ...\t', sims);
-V1 = [(1 + Cohr)'].^1;
-V2 = [(1 - Cohr)'].^1;
+V1 = 1 + Cohr'.^gamma;
+V2 = 1 - Cohr'.^gamma;
 Vinput = [V1, V2]*scale;
 Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a_accuracy(1)).*eqlb);
 

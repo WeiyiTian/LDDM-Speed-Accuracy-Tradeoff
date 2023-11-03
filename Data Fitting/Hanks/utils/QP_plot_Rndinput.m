@@ -20,14 +20,15 @@ end
 % parameters to fit
 a = params(1)*eye(2);
 b = params(2)*eye(2);
-tauR = params(5);
-tauG = params(6);
-tauI = params(7);
+tauR = params(6);
+tauG = params(7);
+tauI = params(8);
 ndt = .09 + .03; % sec, 90ms after stimuli onset, resort to the saccade side,
 % the activities reaches peak 30ms before initiation of saccade, according to Roitman & Shadlen
 presentt = 0; % changed for this version to move the fitting begin after the time point of recovery
-scale = params(4);
-sgmInput = params(3)*scale;
+scale = params(5);
+sgmInput = params(4)*scale;
+sgm = params(3);
 
 % other fixed parameters
 % sims = 1024;
@@ -46,13 +47,12 @@ Rstar = 32; % ~ 32 Hz at the bottom of initial fip, according to Roitman and Sha
 initialvals = [Rstar,Rstar; sum(w(1,:))*Rstar,sum(w(2,:))*Rstar; 0,0];
 eqlb = Rstar; % set equilibrium value before task as R^*
 Tau = [tauR tauG tauI];
-sgm = .3;
 
 % simulation
 % fprintf('GPU Simulations %i chains ...\t', sims);
 
-V1 = [(1 + Cohr)'].^1.5;
-V2 = [(1 - Cohr)'].^1.5;
+V1 = [(1 + Cohr)'].^1;
+V2 = [(1 - Cohr)'].^1;
 % V1 = (1 + Cohr)';
 % V2 = (1 - Cohr)';
 

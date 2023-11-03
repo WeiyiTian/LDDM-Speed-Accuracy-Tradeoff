@@ -47,8 +47,8 @@ for ii = 1:6
 
 end
 
-perc = 80;
-num_bins = 10;
+perc = 70;
+num_bins = 6;
 
 %% pre-calculation of simulated data
 acc_sim_bank = [];
@@ -110,7 +110,7 @@ font_size = 8;
 
 y_max = ceil(max([max(cell2mat(acc_emp_bank)), max(cell2mat(speed_emp_bank)), ...
     max(cell2mat(acc_sim_bank)), max(cell2mat(speed_sim_bank))]) / 10) * 10;
-x_max = max([prctile([acc_empirical_rt; speed_empirical_rt], 97)]);
+x_max = max([prctile([acc_empirical_rt; speed_empirical_rt], 98)]);
 
 for ii = 1:6
     subplot(6, 1, ii); hold on;
