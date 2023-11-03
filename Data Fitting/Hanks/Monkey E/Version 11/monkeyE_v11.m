@@ -23,11 +23,11 @@ dataBhvr = load_data("../../Empirical Data/behavData_eli.mat");
 
 %% define the range of the parameters
 % Define optimization starting point and bounds
-%   a_acc,  b_acc, a_speed, b_speed, noise,  noiseInput, scale,    gamma,  Tau
-LB = [0     0.5      0      0.5      .1      0           .1*256    .1      [.01,.01,.01]];
-UB = [70    2.5	    70      2.5      100     50          20*256    10      [1,1,1]];
-PLB = [0   .9	    15      .9       5       5           1*256     .5      [.02 .02 .02]];
-PUB = [50   1.7	    60      1.7      40      15          8*256     2       [.2 .2 .2]];
+%   a_acc,  b_acc, a_speed, b_speed,  noiseInput, scale,    gamma,  Cmax,  Tau
+LB = [0     0.5      0      0.5       0           .1*256    0       0      [.01,.01,.01]];
+UB = [70    2.5	    70      2.5       50          20*256    10      1      [1,1,1]];
+PLB = [0   .9	    15      .9        5           1*256     .5      .3     [.02 .02 .02]];
+PUB = [50   1.7	    60      1.7       15          8*256     2       .6     [.2 .2 .2]];
 
 % Randomize initial starting point inside plausible box
 x0 = rand(1,numel(LB)) .* (PUB - PLB) + PLB;
