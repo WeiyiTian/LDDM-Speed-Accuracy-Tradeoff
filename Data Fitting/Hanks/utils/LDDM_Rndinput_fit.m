@@ -7,7 +7,8 @@ b_speed = params(4)*eye(2);
 scale = params(6);
 sgmInput = params(5)*scale;
 gamma = params(7);
-Cmax = params(8);
+amp = params(8);
+Cmax = amp / .512 ^ gamma;
 tauR = params(9);
 tauG = params(10);
 tauI = params(11);
@@ -37,8 +38,8 @@ eqlb = Rstar; % set equilibrium value before task as R^*
 Tau = [tauR tauG tauI];
 % simulation
 % fprintf('GPU Simulations %i chains ...\t', sims);
-V1 = 1 + Cmax ./ (1 + exp(-gamma * Cohr));
-V2 = 1 - Cmax ./ (1 + exp(-gamma * Cohr));
+V1 = 1 + Cmax * Cohr' .^ gamma;
+V2 = 1 - Cmax * Cohr' .^ gamma;
 Vinput = [V1, V2]*scale;
 Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a_accuracy(1)).*eqlb);
 

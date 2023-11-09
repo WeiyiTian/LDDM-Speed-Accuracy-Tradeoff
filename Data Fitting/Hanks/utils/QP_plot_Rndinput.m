@@ -16,19 +16,22 @@ elseif condition == "speed"
     empirical_proportion_mat = dataBhvr.speed_proportionmat;
 end
 
-
 % parameters to fit
 a = params(1)*eye(2);
 b = params(2)*eye(2);
-tauR = params(6);
-tauG = params(7);
-tauI = params(8);
+scale = params(4);
+sgmInput = params(3)*scale;
+gamma = params(5);
+amp = params(6);
+Cmax = amp / .512 ^ gamma;
+tauR = params(7);
+tauG = params(8);
+tauI = params(9);
+
 ndt = .09 + .03; % sec, 90ms after stimuli onset, resort to the saccade side,
 % the activities reaches peak 30ms before initiation of saccade, according to Roitman & Shadlen
 presentt = 0; % changed for this version to move the fitting begin after the time point of recovery
-scale = params(5);
-sgmInput = params(4)*scale;
-sgm = params(3);
+sgm = .3;
 
 % other fixed parameters
 % sims = 1024;
@@ -50,12 +53,8 @@ Tau = [tauR tauG tauI];
 
 % simulation
 % fprintf('GPU Simulations %i chains ...\t', sims);
-
-V1 = [(1 + Cohr)'].^1;
-V2 = [(1 - Cohr)'].^1;
-% V1 = (1 + Cohr)';
-% V2 = (1 - Cohr)';
-
+V1 = 1 + Cmax * Cohr' .^ gamma;
+V2 = 1 - Cmax * Cohr' .^ gamma;
 %% CGHH
 Vinput = [V1, V2]*scale;
 Vprior = ones(size(Vinput))*(2*mean(w,'all')*eqlb.^2 + (1-a(1)).*eqlb);
@@ -68,7 +67,7 @@ save(fullfile(out_dir, sprintf('simulate_%s.mat', filename)), 'simulate_rt', 'si
 % toc;
 
 
-% visualization
+%% visualization
 lwd = 1.0;
 mksz = 3;
 fontsize = 14;
