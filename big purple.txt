@@ -1,0 +1,18 @@
+ssh wt746@bigpurple.nyumc.org
+zisbiT-nixbof-hajki5
+
+
+module load git
+git pull
+
+cd 'LDDM-Speed-Accuracy-Tradeoff/Data Fitting/Hanks/Monkey D/Version 4'
+cd './Data Fitting/Hanks/Monkey D/Version 14/result'
+cd './Data Fitting/Hanks/Monkey E/Version 12/result'
+
+sbtach gpu4med_LDDM
+
+sj	# check running tasks
+vi file_name	# check and edit files
+chmod +x file_name # allow executing a file
+
+nvidia-smi # in node, check GPU
